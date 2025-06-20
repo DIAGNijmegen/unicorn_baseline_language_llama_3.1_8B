@@ -170,25 +170,27 @@ def run_language(OUTPUT_PATH: Path) -> int:
     few_shots = algorithm.df_train
     test_data = algorithm.df_test
     basepath = Path("/opt/app/workdir/language")
-    setup_folder_structure(basepath, test_data, filename="test")
     print(f"Task description: {task_config}")
 
     task_name = task_config.task_name
     task_id = task_config.jobid
+
+    # Task specific preprocessing
+    if task_name.lower().startswith("task16_"):
+        test_data["text"] = test_data["text_parts"].apply(task16_preprocessing)
+        task_config.input_name = "text"
+
+    setup_folder_structure(basepath, test_data, filename="test")
 
     generate_task_file(
         config=task_config,
         task_folder=basepath / "tasks",
     )
 
-    # Task specific preprocessing
-    if task_name.lower().startswith("task16_"):
-        test_data["text"] = test_data["text_parts"].apply(task16_preprocessing)
-
     # Perform data extraction
     extractinate(
         task_id=task_id,
-        model_name="phi4",
+        model_name="llama3.1",
         num_examples=0,
         temperature=0.0,
         max_context_len="max",
@@ -228,6 +230,8 @@ def run_language(OUTPUT_PATH: Path) -> int:
     )
 
     # Verify the predictions
+    if task_name.lower().startswith("task16_"):
+        task_config.input_name = "text_parts"
     algorithm.test_predictions_path = test_predictions_path
     algorithm.verify_predictions()
 
