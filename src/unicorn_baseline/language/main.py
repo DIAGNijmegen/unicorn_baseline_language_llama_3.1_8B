@@ -13,11 +13,13 @@
 #  limitations under the License.
 
 import json
+import os
 import time
 from pathlib import Path
 from typing import List
 
 import pandas as pd
+import tiktoken
 from dragon_baseline.main import DragonBaseline
 from llm_extractinator import extractinate
 
@@ -161,6 +163,15 @@ def post_process_predictions(data: json, task_config: DragonBaseline):
 
 
 def run_language(OUTPUT_PATH: Path) -> int:
+    # Make sure tiktoken can cache its data
+    tiktoken_cache_dir = "/opt/tiktoken_cache"
+    os.environ["TIKTOKEN_CACHE_DIR"] = tiktoken_cache_dir
+
+    print("Checking tiktoken...")
+    encoding = tiktoken.get_encoding("cl100k_base")
+    encoding.encode("Hello, world")
+    print("Tiktoken is working!")
+
     # Read the task configuration, few-shots and test data
     # We'll leverage the DRAGON baseline algorithm for this
     algorithm = DragonBaseline()

@@ -61,6 +61,12 @@ RUN python -m pip install \
     --requirement /opt/app/requirements.in \
     && rm -rf /home/user/.cache/pip
 
+# Cache tiktoken
+ENV TIKTOKEN_CACHE_DIR=/opt/tiktoken_cache
+RUN pip install --upgrade tiktoken
+ARG TIKTOKEN_URL="https://openaipublic.blob.core.windows.net/encodings/cl100k_base.tiktoken"
+RUN wget -O /opt/tiktoken_cache/$(echo -n $TIKTOKEN_URL | sha1sum | head -c 40) $TIKTOKEN_URL
+
 # install UNICORN baseline
 COPY --chown=user:user src /opt/app/unicorn_baseline/src
 COPY --chown=user:user LICENSE /opt/app/unicorn_baseline/
