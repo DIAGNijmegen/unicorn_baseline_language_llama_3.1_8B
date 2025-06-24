@@ -25,6 +25,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libtiff-dev \
     zlib1g-dev \
     curl \
+    wget \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
