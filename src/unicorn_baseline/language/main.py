@@ -258,6 +258,8 @@ def run_language(OUTPUT_PATH: Path) -> int:
         content=predictions,
     )
 
+    print(f"Example of predictions:\n{predictions[:2]}")
+
     # Verify the predictions
     if task_name.lower().startswith("task16_"):
         task_config.input_name = "text_parts"
