@@ -9,8 +9,8 @@ RUN groupadd --gid ${USER_GID} user \
     && useradd -m --no-log-init --uid ${USER_UID} --gid ${USER_GID} user
 
 # create input/output directory
-RUN mkdir -p /input /output /opt/app/workdir/language && \
-    chown -R user:user /input /output /opt/app/workdir/language
+RUN mkdir -p /input /output /opt/app/workdir/language /opt/tiktoken_cache && \
+    chown -R user:user /input /output /opt/app/workdir/language /opt/tiktoken_cache
 
 # Ensures that Python output to stdout/stderr is not buffered: prevents missing information when terminating
 ENV PYTHONUNBUFFERED=1
